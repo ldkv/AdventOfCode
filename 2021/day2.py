@@ -36,9 +36,7 @@ def solution_part2(inputs):
 
 
 if __name__ == '__main__':
-    day = 2
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    input_file = f"./inputs/input_day{day}.txt"
-    inputs = aoc_tools.get_inputs(input_file)
+    day = os.path.basename(__file__).split('.')[0]
+    inputs = aoc_tools.generate_input_filename_and_get_inputs(day)
     solution_part1(inputs)
     solution_part2(inputs)

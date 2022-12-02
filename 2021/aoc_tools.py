@@ -1,6 +1,5 @@
 # Tools for AoC 2021
-import math
-import bisect
+import os
 
 def clean_line(line, convert_to_int = True):
     l = line.strip()
@@ -8,9 +7,20 @@ def clean_line(line, convert_to_int = True):
         l = int(l)
     return l
 
-def get_inputs(input_file, convert_to_int = False):
+
+def generate_input_filename(day):
+    return f"./inputs/input_{day}.txt"
+
+
+def get_inputs(input_file, convert_to_int=False):
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     inputs = []
     with open(input_file, encoding = 'utf-8') as f:
         for line in f:
             inputs.append(clean_line(line, convert_to_int))
     return inputs
+
+
+def generate_input_filename_and_get_inputs(day, convert_to_int=False):
+    input_filename = generate_input_filename(day)
+    return get_inputs(input_filename, convert_to_int)

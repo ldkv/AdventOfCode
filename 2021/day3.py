@@ -59,16 +59,13 @@ def solution_part2(inputs):
     pos = 1
     while len(curr_least) > 1 and pos < ln:
         _, curr_least = generate_most_least(curr_least, pos)
-        print(len(curr_least))
         pos += 1
     # print(curr_least, pos)
     print(int(curr_most[0], 2) * int(curr_least[0], 2))
 
 
 if __name__ == '__main__':
-    day = 3
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
-    input_file = f"./inputs/input_day{day}.txt"
-    inputs = aoc_tools.get_inputs(input_file)
+    day = os.path.basename(__file__).split('.')[0]
+    inputs = aoc_tools.generate_input_filename_and_get_inputs(day)
     solution_part1(inputs)
     solution_part2(inputs)
