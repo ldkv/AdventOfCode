@@ -1,4 +1,4 @@
-import bisect
+import math
 
 day = 2
 

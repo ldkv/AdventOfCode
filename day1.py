@@ -1,10 +1,12 @@
+import math
+
 day = 1
 
 def solution(f):
     elves = []
     add = 0
     for line in f:
-        if line == '\n':
+        if not line.strip():
             elves.append(add)
             add = 0
             continue
