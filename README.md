@@ -1,5 +1,5 @@
-# AdventOfCode
+# Advent Of Code
 
-Event: https://adventofcode.com/2022/  
+My attempt at solving Advent of Code puzzles with Python 3. 
 
-About: https://adventofcode.com/2022/about
+I prioritize reaching the answer the quickest possible, so the solutions are tailored to the given inputs, and are certainly not optimized and don't take into account edge cases.
