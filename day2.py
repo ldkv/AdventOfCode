@@ -1,5 +1,7 @@
 import bisect
 
+day = 2
+
 def solution(f):
     strat1 = {
         'X' : {
@@ -43,20 +45,19 @@ def solution(f):
         }
     }
 
-    add1 = 0
-    add2 = 0
+    res1 = 0
+    res2 = 0
 
     for line in f:
         a = line.strip().split(' ')
         left = a[0]
         right = a[1]
-        add1 += strat1[right]['point'] + strat1[right][left]
-        add2 += strat2[right]['point'] + strat2[right][left]
-    f.close()
+        res1 += strat1[right]['point'] + strat1[right][left]
+        res2 += strat2[right]['point'] + strat2[right][left]
 
-    print(add1, add2)
+    print(res1, res2)
 
-day = 2
-input_file = f"input_day{day}.txt"
-with open(input_file, encoding = 'utf-8') as f:
-   solution(f)
+if __name__ == '__main__':
+    input_file = f"./inputs/input_day{day}.txt"
+    with open(input_file, encoding = 'utf-8') as f:
+        solution(f)

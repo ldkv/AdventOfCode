@@ -1,15 +1,21 @@
 import bisect
 
-f = open("input_day1.txt", "r")
-count = 0
+day = 1
 
-max = []
-add = 0
-for x in f:
-    if x == '\n':
-        bisect.insort(max, add)
-        add = 0
-        continue
-    add += int(x)
+def solution(f):
+    sorted = []
+    add = 0
+    for line in f:
+        if line == '\n':
+            bisect.insort(sorted, add)
+            add = 0
+            continue
+        add += int(line)
+    
+    print(sorted[-1])
+    print(sum(sorted[-3:]))
 
-print(sum(max[-3:]))
+if __name__ == '__main__':
+    input_file = f"./inputs/input_day{day}.txt"
+    with open(input_file, encoding = 'utf-8') as f:
+        solution(f)
