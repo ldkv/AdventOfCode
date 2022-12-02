@@ -1,9 +1,8 @@
-import math
+import os
+import aoc_tools
 
-day = 2
-
-def solution(f):
-    strat1 = {
+def solution_part1(f):
+    strat_part1 = {
         'X' : {
             'point': 1,
             'A': 3,
@@ -23,8 +22,7 @@ def solution(f):
             'C': 3
         }
     }
-
-    strat2 = {
+    strat_part2 = {
         'X' : {
             'point': 0,
             'A': 3,
@@ -52,12 +50,15 @@ def solution(f):
         a = line.strip().split(' ')
         left = a[0]
         right = a[1]
-        res1 += strat1[right]['point'] + strat1[right][left]
-        res2 += strat2[right]['point'] + strat2[right][left]
+        res1 += strat_part1[right]['point'] + strat_part1[right][left]
+        res2 += strat_part2[right]['point'] + strat_part2[right][left]
 
     print(res1, res2)
 
 if __name__ == '__main__':
+    day = 2
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     input_file = f"./inputs/input_day{day}.txt"
-    with open(input_file, encoding = 'utf-8') as f:
-        solution(f)
+    inputs = aoc_tools.get_inputs(input_file)
+    solution_part1(inputs)
+    # solution_part2(inputs)
