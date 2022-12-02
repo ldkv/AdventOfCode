@@ -1,4 +1,4 @@
-# AdventOfCode2022
+# AdventOfCode
 
 Event: https://adventofcode.com/2022/  
 
