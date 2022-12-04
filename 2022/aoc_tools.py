@@ -1,4 +1,4 @@
-# Tools for AoC 2021
+# Tools for AoC 2022
 import os
 
 def clean_line(line, convert_to_int = True):
