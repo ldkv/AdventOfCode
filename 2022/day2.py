@@ -1,7 +1,7 @@
 import os
 import aoc_tools
 
-def solution_part1(f):
+def solution_both_parts(f):
     strat_part1 = {
         'X' : {
             'point': 1,
@@ -53,10 +53,11 @@ def solution_part1(f):
         res1 += strat_part1[right]['point'] + strat_part1[right][left]
         res2 += strat_part2[right]['point'] + strat_part2[right][left]
 
-    print(res1, res2)
+    return (res1, res2)
 
 if __name__ == '__main__':
     day = os.path.basename(__file__).split('.')[0]
     inputs = aoc_tools.generate_input_filename_and_get_inputs(day)
-    solution_part1(inputs)
-    # solution_part2(inputs)
+    sol1, sol2 = solution_both_parts(inputs)
+    print(f"Solution for {day} part 1 = {sol1}")
+    print(f"Solution for {day} part 2 = {sol2}")

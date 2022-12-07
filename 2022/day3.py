@@ -11,20 +11,20 @@ def calc_priority(letter):
 def solution_part1(inputs):
     res = 0
     for line in inputs:
+        # Find same character in 1st and 2nd parts of same line
         ln = len(line)
-        if ln % 2 == 1:
-            print(ln, line)
         for let in line[:ln//2]:
             if let in line[ln//2:]:
                 res += calc_priority(let)
                 break
-    print(res)
+    return res
     
 
 def solution_part2(inputs):
     res = 0
     idx = 0
     while idx < len(inputs):
+        # Find same character in 3 consecutive lines
         first = ''
         for let in inputs[idx]:
             if let in inputs[idx + 1]:
@@ -34,11 +34,11 @@ def solution_part2(inputs):
                 res += calc_priority(let)
                 break
         idx += 3
-    print(res)
+    return res
 
     
 if __name__ == '__main__':
     day = os.path.basename(__file__).split('.')[0]
     inputs = aoc_tools.generate_input_filename_and_get_inputs(day, test_file=False)
-    solution_part1(inputs)
-    solution_part2(inputs)
+    print(f"Solution for {day} part 1 = {solution_part1(inputs)}")
+    print(f"Solution for {day} part 2 = {solution_part2(inputs)}")
