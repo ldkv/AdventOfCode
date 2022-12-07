@@ -2,81 +2,71 @@ import os
 import aoc_tools
 
 class Node:
-    def __init__(self, name, type='D', size=0, parent=None):
+    def __init__(self, name, parent=None):
         self.name = name
         self.parent = parent
-        self.type = type
-        self.children = {}
-        self.size = size
-        if type == 'F':
-            self.children = None
- 
-    def add_child(self, child_node):
-        if child_node.name not in self.children: 
-            self.children[child_node.name] = child_node
-
-    def update_size(self):
-        if self.type == 'F':
-            return self.size
+        self.folders = {}
+        self.files = {}     # Not necessary for this puzzle
         self.size = 0
-        for child in self.children:
-            self.size += self.children[child].update_size()
-        return self.size
 
-    def find_nodes(self, limit=100000):
-        if self.type == 'F':
-            return 0
-        add = 0
-        for child in self.children:
-            if self.children[child].type == 'D' and self.children[child].size <= limit:
-                add += self.children[child].size
-            add += self.children[child].find_nodes()
-        return add
+    def add_folder(self, child_node):
+        self.folders[child_node.name] = child_node
+
+    def add_file(self, file_name, file_size):
+        self.files[file_name] = file_size
+        self.update_size(file_size)
+
+    # Update total size of all parent folders until root
+    def update_size(self, file_size):
+        curr = self
+        while curr:
+            curr.size += file_size
+            curr = curr.parent
 
 
-def generate_root_folder(inputs):
+def parse_and_generate_root_folder(inputs):
     root = Node('/')
     curr = root
-    for line in inputs[2:]:
-        read = line.split(' ')
-        if read[0] == '$' and read[1] == 'cd':
-            if read[2] == '..':
+    for line in inputs:
+        line_split = line.split(' ')
+        if line_split[0] == '$' and line_split[1] == 'ls':
+            continue
+        if line_split[0] == '$' and line_split[1] == 'cd':
+            if line_split[2] == '..':
                 curr = curr.parent
-            elif read[2] == '/':
+            elif line_split[2] == '/':
                 curr = root
             else:
-                curr = curr.children[read[2]]
+                curr = curr.folders[line_split[2]]
             continue
-        if read[0] == '$' and read[1] == 'ls':
-            continue
-
-        if read[0] == 'dir':
-            child = Node(read[1], 'D', 0, curr)
+        
+        if line_split[0] == 'dir':
+            child = Node(line_split[1], curr)
+            curr.add_folder(child)
         else:
-            child = Node(read[1], 'F', int(read[0]), curr)
-        curr.add_child(child)
-    root.update_size()    
+            curr.add_file(line_split[1], int(line_split[0]))
+    
     return root
 
 
-def solution_part1(root):
-    res1 = root.find_nodes(100000)
-    return res1
-
-
-def solution_part2(root):
-    min_limit = 30000000 - 70000000 + root.size
-    curr_min = root
+def solution_both_parts(root):
+    limit_part1 = 100000
+    min_limit_part2 = 30000000 - 70000000 + root.size
+    total_size = 0
+    curr_min = root.size
     stack = [root]
     while stack:
         curr_node = stack.pop()
-        if curr_node.type == 'F':
-            continue
-        if curr_node.size >= min_limit and curr_node.size < curr_min.size:
-            curr_min = curr_node
-        for child in curr_node.children:
-            stack.append(curr_node.children[child])
-    return curr_min.size
+        # Solution for part1
+        if curr_node.size <= limit_part1:
+            total_size += curr_node.size
+        # Solution for part2
+        if min_limit_part2 <= curr_node.size < curr_min:
+            curr_min = curr_node.size
+        for child in curr_node.folders:
+            stack.append(curr_node.folders[child])
+    
+    return total_size, curr_min
  
 
 if __name__ == '__main__':
@@ -86,6 +76,7 @@ if __name__ == '__main__':
         raw_input=False,
         test_file=False
     )
-    root = generate_root_folder(inputs)
-    print(f"Solution for {day} part 1 = {solution_part1(root)}")
-    print(f"Solution for {day} part 2 = {solution_part2(root)}")
+    root = parse_and_generate_root_folder(inputs)
+    sol1, sol2 = solution_both_parts(root)
+    print(f"Solution for {day} part 1 = {sol1}")
+    print(f"Solution for {day} part 2 = {sol2}")
