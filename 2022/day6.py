@@ -1,5 +1,4 @@
 import os
-from collections import defaultdict
 import aoc_tools
 from aoc_tools import timeit
 
