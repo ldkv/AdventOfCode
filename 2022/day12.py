@@ -47,7 +47,6 @@ def solution_part1(grid):
     H = len(grid)
     W = len(grid[0])
     start, end = find_start_end(grid)
-    print(start, end, H, W)
     visited = set([start])
     queue = deque([[start]])
     while queue:
@@ -76,22 +75,18 @@ def solution_part2(grid):
     H = len(grid)
     W = len(grid[0])
     start, end = find_start_end(grid)
-    print(start, end, H, W)
     starts = find_possible_starts(grid)
+    # Searching back from E
     start = end
-    print(len(starts), start)
-    min_path = H*W + 1
     for end in starts:
         visited = set([start])
         queue = deque([[start]])
         while queue:
             path = queue.popleft()
-            if len(path) - 1 > min_path:
-                continue
             x, y = path[-1]
-            if grid[x][y] == grid[end[0]][end[1]] and len(path) - 1 < min_path:
-                min_path = len(path) - 1
-                break
+            # The first 'a' or 'S' found is the closest from E
+            if grid[x][y] == 'a' or grid[x][y] == 'S':
+                return len(path) - 1
             curr_height = height(grid[x][y])
             for x2, y2 in ((x+1,y), (x-1,y), (x,y+1), (x,y-1)):
                 if 0 <= x2 < H and 0 <= y2 < W:
@@ -99,14 +94,14 @@ def solution_part2(grid):
                     if (curr_height - h) <= 1 and (x2, y2) not in visited:
                         queue.append(path + [(x2, y2)])
                         visited.add((x2, y2))
-    return min_path
+    return -1
 
 if __name__ == '__main__':
     day = os.path.basename(__file__).split('.')[0]
     grid = aoc_tools.generate_input_filename_and_get_inputs(
         day,
         raw_input=False,
-        test_file=False
+        test_file=True
     )
     print(f"Solution for {day} part 1 = {solution_part1(grid)}")
     print(f"Solution for {day} part 2 = {solution_part2(grid)}")
