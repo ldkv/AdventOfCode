@@ -1,6 +1,6 @@
 import os
-import aoc_tools
 import bisect
+import aoc_tools
 from collections import defaultdict
 
 
@@ -44,27 +44,25 @@ def solution_part1(inputs, depth=2000000):
 
 @aoc_tools.timeit
 def solution_part2(inputs, max_depth=20):
-    occupied = defaultdict(list)
+    sensors = defaultdict(int)
     for line in inputs:
         sx, sy, bx, by = parse_inputs(line)
-        dist = manhattan_distance((sx, sy), (bx, by))
-        # Limit the range on Y
-        start_y = max(0, sy - dist)
-        stop_y = min(max_depth, sy + dist)
-        for depth in range(start_y, stop_y + 1):
-            remain_dist = dist - abs(sy - depth)
-            # Save the range of X for each depth and each sensor in ascending order
-            bisect.insort(occupied[depth], (sx - remain_dist, sx + remain_dist))
-    print("HERE", len(occupied))
+        sensors[(sx, sy)] = manhattan_distance((sx, sy), (bx, by))
+    
+    # Limit the range on Y
+    for depth in range(0, max_depth + 1):
+        ranges = []
+        for s in sensors:
+            remain_dist = sensors[s] - abs(s[1] - depth)
+            if remain_dist >= 0:
+                # Save the horizontal range each sensor in ascending order
+                bisect.insort(ranges, ((s[0] - remain_dist, s[0] + remain_dist)))
 
-    for depth in occupied:
-        ranges = occupied[depth]
-        if len(ranges) == 0:
-            return 0
-        # Merge the ranges to find hole => answer
+        # Sort then merge the ranges to find hole => answer
         prev = ranges[0]
         for i in range(1, len(ranges)):
             if ranges[i][0] > prev[1] + 1:
+                print(depth)
                 return ((prev[1] + 1) * max_depth + depth)
             prev = (prev[0], max(prev[1], ranges[i][1]))
 
