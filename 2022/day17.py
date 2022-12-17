@@ -66,53 +66,48 @@ class Rock:
                 break
             depth -= 1
             
-            # print(self.rock, curr_jet, jet_index, depth)
-        floor = add_floor(depth, floor, self)
-        # floor = cut_floor(floor)
-        return floor, jet_index
+        return depth, jet_index
 
 
-def add_floor(depth, floor, rock):
-    added_height = 0
-    for _ in range(rock.height + depth):
-        new_floor = [False] * 7
-        added_height += 1
-        floor.append(new_floor)
-    for r in rock.rock:
-        r_level = r // 7
-        floor_level = (3 - r_level) - added_height + depth
-        floor[floor_level][r % 7] = True
-    # render_floor(floor)
-    return floor
+class Floor:
+    def __init__(self, width):
+        self.width = width
+        self.floor = [[True] * self.width]
+        self.full_floor = [0] * self.width
+        self.total_floor = 0
 
+    def add_floor(self, depth, rock):
+        added_height = 0
+        for _ in range(rock.height + depth):
+            new_floor = [False] * self.width
+            added_height += 1
+            self.floor.append(new_floor)
 
-def cut_floor(floor):
-    full_floor = [False] * 7
-    count = 0
-    for i in range(len(floor) - 1, -1, -1):
-        for t, tile in enumerate(floor[i]):
-            if tile and not full_floor[t]:
-                full_floor[t] == tile
-                count += 1
-        if count >= 7:
-            break
-    print(i)
-    floor = floor[i:]
-    return floor
+        self.total_floor += added_height
+        for r in rock.rock:
+            r_level = r // 7
+            floor_level = (3 - r_level) - added_height + depth
+            self.floor[floor_level][r % 7] = True
+            self.full_floor[r % 7] = len(self.floor) + floor_level
 
+    def cut_floor(self):
+        cut_floor = min(self.full_floor)
+        if min(self.full_floor) > 0:
+            self.floor = self.floor[cut_floor : ]
+            self.full_floor = [0] * self.width
 
-def render_floor(floor):
-    for i in range(len(floor)-1, -1, -1):
-        for tile in floor[i]:
-            print(f"{'#' if tile else '.'}", end= ' ')
-        print('\n')
-    print('======================================')
+    def render_floor(self):
+        for i in range(len(self.floor)-1, -1, -1):
+            for tile in self.floor[i]:
+                print(f"{'#' if tile else '.'}", end= ' ')
+            print('\n')
+        print('======================================')
 
 
 def solution_part1(inputs):
     jets = inputs[0]
     width = 7
-    floor = [[True] * width]
+    floor = Floor(width)
     jet_index = 0
     for r in range(2022):
         rock = Rock(r % 5)
@@ -124,13 +119,19 @@ def solution_part1(inputs):
 def solution_part2(inputs):
     jets = inputs[0]
     width = 7
-    floor = [[True] * width]
+    floor = Floor(width)
     jet_index = 0
-    for r in range(2022):
-        rock = Rock(r % 5)
-        floor, jet_index = rock.drop_rock(jets, jet_index, floor)
-    # render_floor(floor)
-    return len(floor) - 1
+    rock_type = 0
+    for i in range(1_000_000):
+        for _ in range(1_000_000):
+            rock = Rock(rock_type)
+            rock_type = (rock_type + 1) % 5
+            depth, jet_index = rock.drop_rock(jets, jet_index, floor.floor)
+            floor.add_floor(depth, rock)
+        print(i, floor.total_floor)
+        floor.cut_floor()
+        
+    return floor.total_floor
 
 
 if __name__ == '__main__':
@@ -141,4 +142,4 @@ if __name__ == '__main__':
         test_file=0
     )
     print(f"Solution for {day} part 1 = {solution_part1(inputs)}")
-    # print(f"Solution for {day} part 2 = {solution_part2(inputs)}")
+    print(f"Solution for {day} part 2 = {solution_part2(inputs)}")
