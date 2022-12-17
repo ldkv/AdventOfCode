@@ -9,7 +9,7 @@ all_valves = {}
 
 def parse_input(inputs):
     graph = {}
-    pressures = {}
+    positive_valves = {}
     for line in inputs:
         line = line.split('Valve ')[1]
         valve = line[:2]
@@ -20,13 +20,14 @@ def parse_input(inputs):
         else:
             tunnels = line[1].split('tunnel leads to valve ')[1].split(', ')
         if pressure > 0:
-            pressures[valve] = pressure
+            positive_valves[valve] = pressure
         graph[valve] = {
             'to' : set(tunnels)
         }
-    return graph, pressures
+    return graph, positive_valves
 
 
+# Shortest distance map from a valve to all other valves (NxN)
 def generate_dist_grid(inputs):
     graph, pressures = parse_input(inputs)
     grid = {}
@@ -51,7 +52,8 @@ def generate_dist_grid(inputs):
 
 @functools.cache
 def find_fastest_route(mn_left, start, valves_left, elephant=False):
-    global grid, all_valves, count
+    global grid, all_valves
+    # Initiate list with 0 to avoid error when call max function
     all_next_valves = [0]
     for v in valves_left:
         if grid[start][v] < mn_left:
