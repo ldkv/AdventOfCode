@@ -1,5 +1,5 @@
 import os
-from collections import deque
+from collections import defaultdict
 import aoc_tools
 
 class Rock:
@@ -110,12 +110,33 @@ def solution_part1(inputs):
     floor = Floor(width)
     jet_index = 0
     rock_type = 0
-    for i in range(1, 10000):
+    for _ in range(2022):
         rock = Rock(rock_type)
         depth, jet_index = rock.drop_rock(jets, jet_index, floor.floor)
         floor.add_floor(depth, rock)
-        if sum(floor.floor[-1]) == 7:
-            print(i, floor.total_floor, rock_type, jet_index)
+        rock_type = (rock_type + 1) % 5
+
+    return floor.total_floor
+
+
+def solution_part2(inputs):
+    jets = inputs[0]
+    width = 7
+    floor = Floor(width)
+    jet_index = 0
+    rock_type = 0
+    patterns = defaultdict(set)
+    lines_tuple = 15
+    while True:
+        rock = Rock(rock_type)
+        depth, jet_index = rock.drop_rock(jets, jet_index, floor.floor)
+        floor.add_floor(depth, rock)
+        pattern = tuple(floor.floor[-1:-15])
+        if (jet_index, rock_type) in patterns[pattern]:
+            print(pattern, ((jet_index, rock_type)))
+            return
+            
+        patterns[pattern].add((jet_index, rock_type))
         rock_type = (rock_type + 1) % 5
     print(i, floor.total_floor, rock_type, jet_index)
 
@@ -142,23 +163,6 @@ def solution_part1(inputs):
     multi = floor.total_floor - level_866
     add = level_866 + quotient * multi + level_remain
     print(level_866, level_remain, multi, remain, quotient, add)
-    return floor.total_floor
-
-
-def solution_part2(inputs):
-    jets = inputs[0]
-    width = 7
-    floor = Floor(width)
-    jet_index = 0
-    rock_type = 0
-    for i in range(1_000_000):
-        for _ in range(1_000_000):
-            rock = Rock(rock_type)
-            rock_type = (rock_type + 1) % 5
-            depth, jet_index = rock.drop_rock(jets, jet_index, floor.floor)
-            floor.add_floor(depth, rock)
-        print(i, floor.total_floor)
-        floor.cut_floor()
         
     return floor.total_floor
 
@@ -171,4 +175,4 @@ if __name__ == '__main__':
         test_file=0
     )
     print(f"Solution for {day} part 1 = {solution_part1(inputs)}")
-    # print(f"Solution for {day} part 2 = {solution_part2(inputs)}")
+    print(f"Solution for {day} part 2 = {solution_part2(inputs)}")
